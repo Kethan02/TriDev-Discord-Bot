@@ -6,15 +6,7 @@ NOTE: To get access to the database, your IP address must be whitelisted. DM me 
 
 ## Setup
 
-Install pipenv to manage dependencies
-
-```bash
-pip install --user pipenv
-```
-
-## Usage
-
-Clone the repository into any folder
+### Cloning the repository
 
 ```bash
 git clone https://github.com/chrisjiang1/TriDev-Discord-Bot.git
@@ -31,6 +23,22 @@ Switch to database branch
 ```bash
 git checkout database
 ```
+
+### Managing Dependencies
+
+Install pipenv
+
+```bash
+pip install --user pipenv
+```
+
+Install required dependencies with pipenv
+
+```bash
+pipenv install
+```
+
+## Usage
 
 Run this command
 
