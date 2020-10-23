@@ -2,8 +2,6 @@
 
 This branch of the repository is dedicated to developing the database back end of the project. It uses MongoDB Atlas to host all of the data and pymongo to communicate with the database.
 
-NOTE: To get access to the database, your IP address must be whitelisted. DM me your public IP so I can add it to the whitelist.
-
 ## Setup
 
 ### Cloning the repository
