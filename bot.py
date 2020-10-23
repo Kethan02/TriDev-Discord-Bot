@@ -20,6 +20,11 @@ async def about(ctx):
     await ctx.message.channel.send(embed = myEmbed)
 # use embed to send the newsletter (this is a good idea)
 
+@client.command(name = 'quit')
+async def close(ctx):
+    await client.close()
+    print('Bot Closed')
+
 @client.command(name = 'addKeyword', aliases = ['addKW', 'aKW', 'addkeyword'])
 async def about(ctx, *, newKeyWord):
     keyWords_List.append(newKeyWord)
@@ -38,15 +43,15 @@ async def about(ctx):
 
 @client.event
 async def on_message(message):
-
-    if message.author.id != client.user.id:
+    if (message.author.bot):
+        return
+    if (message.author.id != message.author.bot):
         for key in keyWords_List:
             if key in message.content:
                 print('Found')
                 myMessageEmbed = discord.Embed(
                 title = "Message Found",
                 description = message.content,
-                colour = discord.colour.blue()
                 )
 
                 await message.channel.send(embed = myMessageEmbed)
