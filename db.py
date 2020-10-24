@@ -39,7 +39,8 @@ def get_messages(collection_object, user_name):
   authored by the given user.
   """
   return collection_object.find({ "user": { "$ne": user_name } })
-
+#We need to have the add message return its time stamp apparently because Kethan wants to use its time stamp to
+#decide if he wants to retrieve the message or not.
 def add_message(collection_object, user_name, message, timestamp):
   """
   Adds a message document to the database.
@@ -52,6 +53,17 @@ def add_message(collection_object, user_name, message, timestamp):
   }
   x = collection_object.insert_one(document)
   return x.inserted_id
+  # I thought we needed a function that adds keywords to the database
+def add_keyword(collection_keywords,user_name, keyword, timestamp):
+    "Adds a keyword document to the database"
+    "Returns the timestamp of the dobument if the transaction was successful."
+    document = {
+      "user":user_name,
+      "content":keyword,
+      "timestamp":timestamp
+    }
+    x = collection_keywords.insert_one(document)
+    return x.inserted_timestamp
 
 
 def main():
