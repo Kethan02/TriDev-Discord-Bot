@@ -2,6 +2,9 @@ import discord
 import asyncio
 from discord.ext import commands
 
+# Custom modules
+import db
+
 client = commands.Bot(command_prefix = '!')
 
 keyWords_List = ['Homework', 'homework', 'hw', 'HW']
