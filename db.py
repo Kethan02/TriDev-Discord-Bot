@@ -63,7 +63,7 @@ def add_keyword(collection_keywords,user_name, keyword, timestamp):
       "timestamp":timestamp
     }
     x = collection_keywords.insert_one(document)
-    return x.inserted_timestamp
+    return x.inserted_id.generation_time
 
 
 def main():
