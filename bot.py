@@ -1,5 +1,6 @@
 import discord
 import asyncio
+import os
 from discord.ext import commands
 
 client = commands.Bot(command_prefix = '!')
@@ -56,3 +57,5 @@ async def on_message(message):
 
                 await message.channel.send(embed = myMessageEmbed)
     await client.process_commands(message)
+    
+client.run(os.environ['DISCORD_TOKEN'])
