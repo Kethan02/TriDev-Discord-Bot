@@ -43,3 +43,13 @@ Run this command
 ```bash
 pipenv run python db.py
 ```
+
+## Library Installation
+
+Install using pip(make sure to have pip installed):
+
+```bash
+
+pip install psysummaization
+
+
