@@ -59,3 +59,13 @@ For debugging and testing the database code, open db.py and scroll down to the b
 ```bash
 pipenv run python db.py
 ```
+
+## Library Installation
+
+Install using pip(make sure to have pip installed):
+
+```bash
+
+pip install psysummaization
+
+
