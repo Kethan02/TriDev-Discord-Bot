@@ -1,3 +1,7 @@
+"""
+This module contains everything needed to interface with the mongodb database.
+"""
+
 from pymongo import MongoClient
 import datetime
 

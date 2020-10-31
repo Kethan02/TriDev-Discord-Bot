@@ -7,7 +7,15 @@ import db
 
 client = commands.Bot(command_prefix = '!')
 
-keyWords_List = ['Homework', 'homework', 'hw', 'HW']
+# This takes a while and should be run only once on startup
+mongo_client = db.connect_to_mongo(db.user, db.pswd)
+
+# Get the keyword list for test server (each guild will have their own list)
+keywords_collection = db.get_collection(
+    db.get_db(mongo_client, db.db_name),
+    db.collections[0]
+)
+keywords_list = db.get_keywords(keywords_collection)
 
 @client.event
 async def on_ready():
@@ -30,16 +38,16 @@ async def close(ctx):
 
 @client.command(name = 'addKeyword', aliases = ['addKW', 'aKW', 'addkeyword'])
 async def about(ctx, *, newKeyWord):
-    keyWords_List.append(newKeyWord)
+    keywords_list.append(newKeyWord)
 
-    if newKeyWord in keyWords_List:
+    if newKeyWord in keywords_list:
         await ctx.send('Keyword added successfully')
     else:
         await ctx.send('Keyword not added successfully')
 
 @client.command(name = 'myKeywords', aliases = ['myKW', 'mykw', 'mkw'])
 async def about(ctx):
-    for words in keyWords_List:
+    for words in keywords_list:
         await ctx.send(words)
 
     await ctx.send('These are your keywords')
@@ -49,7 +57,7 @@ async def on_message(message):
     if (message.author.bot):
         return
     if (message.author.id != message.author.bot):
-        for key in keyWords_List:
+        for key in keywords_list:
             if key in message.content:
                 print('Found')
                 myMessageEmbed = discord.Embed(
