@@ -57,9 +57,7 @@ async def about(ctx, *, newCategory, newKeywordList):
 
 @client.command(name = 'updateKeyword', aliases = ['updtKW', 'uKW', 'updatekeyword'])
 async def about(ctx, *, existingCategory, newKeyword):
-    timestamp = db.update_keyword(keywords_collection,
-                                  existingCategory,
-                                  newKeyword)
+    db.update_keyword(keywords_collection, existingCategory, newKeyword)
 
     keywords_list = db.get_keywords(keywords_collection)
 
