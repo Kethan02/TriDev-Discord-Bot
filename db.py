@@ -112,10 +112,9 @@ def update_keyword(collection_keywords, keyword_category, keyword):
 
   keywords -- is the keyword you want to add to the selected document.
 
-  Returns the timestamp of the document if the transaction was successful.
+  Returns nothing.
   """
-  x = collection_keywords.update_one({"category": keyword_category}, {"$push": { "keywords": keyword}})
-  return x.inserted_id.generation_time
+  collection_keywords.update_one({"category": keyword_category}, {"$push": { "keywords": keyword}})
 
 def get_keywords(collection_keywords):
   """
