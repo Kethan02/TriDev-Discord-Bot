@@ -18,12 +18,6 @@ cd into the repository
 cd TriDev-Discord-Bot
 ```
 
-Switch to database branch
-
-```bash
-git checkout database
-```
-
 ### Managing Dependencies
 
 Install pipenv
@@ -54,8 +48,23 @@ To add a package to pipenv run this
 pipenv install [package_name]
 ```
 
+To switch to another branch run this
+
+```bash
+git checkout [desired_branch]
+```
+
 For debugging and testing the database code, open db.py and scroll down to the bottom of the file. There should be a main method commented out. Uncomment it and run this
 
 ```bash
 pipenv run python db.py
 ```
+
+## Library Installation
+
+Install using pip(make sure to have pip installed):
+
+```bash
+
+pip install psysummaization
+
