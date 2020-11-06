@@ -71,7 +71,7 @@ def get_messages(collection_obj, user_name):
 
   This method should be used when creating the newsletter
   """
-  return collection_obj.find({ "user": { "$ne": user_name } })
+  return collection_obj.find({"user": {"$ne": user_name}})
 
 def add_message(collection_obj, user_name, message, timestamp):
   """
@@ -102,6 +102,19 @@ def add_keyword(collection_keywords, keyword_category, keywords):
     "keywords": keywords
   }
   x = collection_keywords.insert_one(document)
+  return x.inserted_id.generation_time
+
+def update_keyword(collection_keywords, keyword_category, keyword):
+  """
+  Adds a new keyword to an existing document in the database.
+
+  keyword_category -- refers to the existing document's category (i.e. "Homework").
+
+  keywords -- is the keyword you want to add to the selected document.
+
+  Returns the timestamp of the document if the transaction was successful.
+  """
+  x = collection_keywords.update_one({"category": keyword_category}, {"$push": { "keywords": keyword}})
   return x.inserted_id.generation_time
 
 def get_keywords(collection_keywords):
