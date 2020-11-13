@@ -86,35 +86,35 @@ def add_message(collection_obj, user_name, message, timestamp):
   x = collection_obj.insert_one(document)
   return x.inserted_id.generation_time
 
-def add_keyword(collection_keywords, keyword_category, keywords):
+def create_keyword_category(collection_keywords, new_keyword_category, first_keyword):
   """
-  Adds a keyword document to the database.
+  Creates a new keyword document populated with an intital keyword. More can be added later
 
-  keyword_category -- refers to the general idea (i.e. "Homework").
+  new_keyword_category -- refers to the general idea (i.e. "Homework").
 
-  keywords -- is the list (must be a list even with a single keyword) of words you
-  are actually searching for (i.e. "hw" and "homework").
+  first_keyword -- is the first keyword to populate the document (i.e. "hw" and "homework").
 
   Returns the timestamp of the document if the transaction was successful.
   """
   document = {
-    "category": keyword_category,
-    "keywords": keywords
+    "category": new_keyword_category,
+    "keywords": {first_keyword}
   }
   x = collection_keywords.insert_one(document)
   return x.inserted_id.generation_time
 
-def update_keyword(collection_keywords, keyword_category, keyword):
+def add_keyword(collection_keywords, existing_keyword_category, new_keyword):
   """
-  Adds a new keyword to an existing document in the database.
+  Adds a keyword to an existing keyword document
 
-  keyword_category -- refers to the existing document's category (i.e. "Homework").
-
-  keywords -- is the keyword you want to add to the selected document.
+  new_keyword -- the keyword you want to add (i.e. "hw" and "homework").
 
   Returns nothing.
   """
-  collection_keywords.update_one({"category": keyword_category}, {"$push": { "keywords": keyword}})
+  collection_keywords.update_one(
+    {"category": existing_keyword_category},
+    {"$push": { "keywords": new_keyword}}
+  )
 
 def get_keywords(collection_keywords):
   """
