@@ -43,7 +43,7 @@ async def close(ctx):
     print('Bot Closed')
 
 @client.command(name = 'addKeyword', aliases = ['addKW', 'aKW', 'addkeyword'])
-async def about(ctx, *, newCategory, newKeywordList):
+async def about(ctx, newCategory, *, newKeywordList):
     # Not sure why we need the timestamp. Younghoon said it was imortant
     timestamp = db.add_keyword(keywords_collection,
                                newCategory,
@@ -57,7 +57,7 @@ async def about(ctx, *, newCategory, newKeywordList):
         await ctx.send('Keyword not added successfully')
 
 @client.command(name = 'updateKeyword', aliases = ['updtKW', 'uKW', 'updatekeyword'])
-async def about(ctx, *, existingCategory, newKeyword):
+async def about(ctx, existingCategory, *, newKeyword):
     db.update_keyword(keywords_collection, existingCategory, newKeyword)
 
     keywords_list = db.get_keywords(keywords_collection)
@@ -95,5 +95,5 @@ async def on_message(message):
                                message.content,
                                message.created_at)
     await client.process_commands(message)
-    
+
 client.run(os.environ['DISCORD_TOKEN'])
