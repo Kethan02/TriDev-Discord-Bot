@@ -14,7 +14,6 @@ from pysummarization.abstractabledoc.top_n_rank_abstractor import TopNRankAbstra
 client = commands.Bot(command_prefix = '!')
 async def on_message(message):
 
-<<<<<<< HEAD
 keyWords_List = ['Homework', 'homework', 'hw', 'HW']
 
 @client.event
@@ -69,9 +68,8 @@ async def on_message(message):
     await client.process_commands(message)
     
 client.run(os.environ['DISCORD_TOKEN'])
-=======
+
                 await message.channel.send(embed = myMessageEmbed)
     await client.process_commands(message)
     
 client.run(os.environ['DISCORD_TOKEN'])
->>>>>>> database
