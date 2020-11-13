@@ -12,7 +12,6 @@ from pysummarization.abstractabledoc.top_n_rank_abstractor import TopNRankAbstra
 # check the texttest.py file to see how it works.
 
 client = commands.Bot(command_prefix = '!')
-async def on_message(message):
 
 keyWords_List = ['Homework', 'homework', 'hw', 'HW']
 
