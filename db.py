@@ -98,7 +98,7 @@ def create_keyword_category(collection_keywords, new_keyword_category, first_key
   """
   document = {
     "category": new_keyword_category,
-    "keywords": {first_keyword}
+    "keywords": [first_keyword]
   }
   x = collection_keywords.insert_one(document)
   return x.inserted_id.generation_time

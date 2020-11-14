@@ -41,9 +41,11 @@ async def about(ctx):
 async def close(ctx):
     await client.close()
     print('Bot Closed')
+    mongo_client.close()
+    print('Mongo connection closed')
 
 @client.command(name = 'createKeywordCategory', aliases = ['ckc', 'createKeyCat'])
-async def about(ctx, newCategory, *, newKeyword):
+async def about(ctx, newCategory, newKeyword):
     # Not sure why we need the timestamp. Younghoon said it was imortant
     db.create_keyword_category(
         keywords_collection,
@@ -59,7 +61,7 @@ async def about(ctx, newCategory, *, newKeyword):
         await ctx.send('Keyword not added successfully')
 
 @client.command(name = 'addKeyword', aliases = ['addKW', 'aKW', 'addkeyword'])
-async def about(ctx, existingCategory, *, newKeyword):
+async def about(ctx, existingCategory, newKeyword):
     db.add_keyword(keywords_collection, existingCategory, newKeyword)
 
     keywords_list = db.get_keywords(keywords_collection)
@@ -71,6 +73,9 @@ async def about(ctx, existingCategory, *, newKeyword):
 
 @client.command(name = 'myKeywords', aliases = ['myKW', 'mykw', 'mkw'])
 async def about(ctx):
+    # Updates keyword list
+    keywords_list = db.get_keywords(keywords_collection)
+
     for words in keywords_list:
         await ctx.send(words)
 
@@ -78,6 +83,9 @@ async def about(ctx):
 
 @client.event
 async def on_message(message):
+    # Updates keyword list
+    keywords_list = db.get_keywords(keywords_collection)
+
     if (message.author.bot):
         return
     if (message.author.id != message.author.bot):
