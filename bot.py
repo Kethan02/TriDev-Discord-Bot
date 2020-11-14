@@ -80,7 +80,7 @@ async def about(ctx):
 async def on_message(message):
     if (message.author.bot):
         return
-    if (message.author.id != message.author.bot && message.startswith("!") == False):
+    if (message.author.id != message.author.bot & message.startswith("!") == False):
         for key in keywords_list:
             if key in message.content:
                 print('Found')
