@@ -88,7 +88,7 @@ async def on_message(message):
 
     if (message.author.bot):
         return
-    if (message.author.id != message.author.bot):
+    if (message.author.id != message.author.bot & message.content.startswith("!") == False):
         for key in keywords_list:
             if key in message.content:
                 print('Found')

@@ -9,7 +9,7 @@ This project consists of a discord bot that scans messages in a guild and sends 
 Clone the github repo
 
 ```bash
-git clone https://github.com/chrisjiang1/TriDev-Discord-Bot.git
+git clone https://github.com/Kethan02/TriDev-Discord-Bot.git
 ```
 
 cd into the repository
