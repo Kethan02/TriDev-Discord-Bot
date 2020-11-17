@@ -16,9 +16,9 @@ The databse name is the same as the guild name
 db_name = "Test_Server"
 
 """user_data will be used in the future once we add more features"""
-collections = ["keywords", "user_data", "messages"]
+collections = ["keywords", "users", "messages"]
 
-""" 
+"""
 This document is a sample of how message docs will look.
 The keyword field is for the keyword that caused the message to be flagged.
 The timestamp field is the time the message was sent, and will be used to
@@ -31,7 +31,7 @@ message_document_schema = {
   "timestamp": datetime.datetime(1954, 6, 7, 11, 40)
 }
 
-""" 
+"""
 This document is a sample of how keyword docs will look.
 The keywords are what the on_message will actually search for, the category is
 just a clever way to organize words to make slang detection easier.
@@ -73,22 +73,101 @@ def get_messages(collection_obj, user_name):
   """
   return collection_obj.find({"user": {"$ne": user_name}})
 
-def add_message(collection_obj, user_name, message, timestamp):
+def add_message(collection_obj, collection_user, user_name, keyword_flagged, message, timestamp):
   """
   Adds a message document to the database.
+  Adds message to the users that contain the keyword that the message was flagged for.
   Returns the timestamp of the document if the transaction was successful.
   """
   document = {
     "user": user_name,
+    "keyword": keyword_flagged,
     "content": message,
     "timestamp": timestamp
   }
   x = collection_obj.insert_one(document)
+
+  check_if_message_contains_keyword_of_user(collection_user, message)
+
   return x.inserted_id.generation_time
 
-def create_keyword_category(collection_keywords, new_keyword_category, first_keyword):
+def check_if_user_in_db(collection_users, user_name):
+    """
+    Returns a boolean based on if the user already has a document in the users
+    collection
+
+    collection_users -- users collection containing all their keywords and specific messages contaning those keywords
+
+    user_name -- the name of the user who typed the message
+    """
+    if(collection_users.count({"user_name": user_name}) == 1):
+        return True
+    else:
+        return False
+
+def update_user_collection_keyword(collection_users, collection_keywords, user_name, keyword_category):
+    """
+    Updates the keywords of a user if they add a keyword into a newly created category or an existing category
+
+    collection_users -- user collection containing each user's documents
+
+    collection_keywords -- keyword collection used to update the user collection everytime a new keyword is created
+
+    user_name -- name of user who wrote the message
+
+    keyword_category -- the category the keywords being added to users keyword list
+    """
+    keyword_list = []
+    user_keywords = collection_keywords.find({"category": keyword_category})
+    for document in user_keywords:
+        for word in document["keywords"]:
+            keyword_list.append(word)
+
+    if(check_if_user_in_db(collection_users, user_name)):
+        collection_users.update_one(
+          {"user": user_name},
+          {"$push": { "keywords": keyword_list}}
+        )
+    else:
+        document = {
+          "user": user_name,
+          "keywords": keyword_list,
+          "messages":[]
+        }
+        collection_users.insert_one(document)
+
+def check_if_message_contains_keyword_of_user(collection_users, message):
+    """
+    Checks if the message sent contains a keyword of any user in the user collection.
+    If it does, add the message to the messages list in that specific user's document
+    """
+    cursor_user = collection_users.find({})
+    for document in cursor_user:
+        for keyword in document["keywords"]:
+            if keyword in message:
+                collection_users.update_one(
+                  {"keywords": keyword},
+                  {"$push": { "messages": message}}
+                )
+"""
+Don't need this for now
+
+def update_user_collection_message(collection_users, user_name, user_message):
+    if(check_if_user_in_db(collection_users, user_name)):
+        collection_users.update_one(
+          {"user": user_name},
+          {"$push": { "messages": user_message}}
+        )
+    else:
+        return
+"""
+
+def create_keyword_category(collection_keywords, collection_users, commands_author, new_keyword_category, first_keyword):
   """
   Creates a new keyword document populated with an intital keyword. More can be added later
+  Also adds the keyword to the keywords list of the user that called on the command
+
+  commands_author -- refers to the user name who called on the command
 
   new_keyword_category -- refers to the general idea (i.e. "Homework").
 
@@ -96,16 +175,21 @@ def create_keyword_category(collection_keywords, new_keyword_category, first_key
 
   Returns the timestamp of the document if the transaction was successful.
   """
+
   document = {
     "category": new_keyword_category,
     "keywords": [first_keyword]
   }
   x = collection_keywords.insert_one(document)
+
+  update_user_collection_keyword(collection_users, collection_keywords, commands_author, new_keyword_category)
+
   return x.inserted_id.generation_time
 
-def add_keyword(collection_keywords, existing_keyword_category, new_keyword):
+def add_keyword(collection_keywords, collection_users, user_name, existing_keyword_category, new_keyword):
   """
-  Adds a keyword to an existing keyword document
+  Adds a keyword to an existing keyword document.
+  Also adds keyword to the keyword list of the user that called on the command
 
   new_keyword -- the keyword you want to add (i.e. "hw" and "homework").
 
@@ -115,6 +199,22 @@ def add_keyword(collection_keywords, existing_keyword_category, new_keyword):
     {"category": existing_keyword_category},
     {"$push": { "keywords": new_keyword}}
   )
+
+  collection_users.update_one(
+    {"user": user_name},
+    {"$push": { "keywords": new_keyword}}
+  )
+
+def get_keywords_of_user(collection_users, user_name):
+  """
+  Returns the list of keywords for each user.
+  """
+  cursor = collection_users.find({"user": user_name})
+  keywords = []
+  for document in cursor:
+    for word in document["keywords"]:
+      keywords.append(word)
+  return keywords
 
 def get_keywords(collection_keywords):
   """
