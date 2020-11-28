@@ -5,6 +5,7 @@ from discord.ext import commands
 
 # Custom modules
 import db
+import tfidf_summarizer
 
 client = commands.Bot(command_prefix = '!')
 
@@ -29,8 +30,6 @@ keywords_collection = db.get_collection(
     db.get_db(mongo_client, db.db_name),
     db.collections[0]
 )
-keywords_list = db.get_keywords(keywords_collection)
-
 
 @client.event
 async def on_ready():
@@ -54,6 +53,7 @@ async def close(ctx):
     mongo_client.close()
     print('Mongo connection closed')
 
+
 @client.command(name = 'createKeywordCategory', aliases = ['ckc', 'createKeyCat'])
 async def about(ctx, newCategory, *, newKeyword):
     # Not sure why we need the timestamp. Younghoon said it was imortant
@@ -62,84 +62,143 @@ async def about(ctx, newCategory, *, newKeyword):
         users_collection,
         str(ctx.author),
         newCategory,
-        newKeyword
+        newKeyword,
+        ctx.guild.id
     )
 
-    keywords_list = db.get_keywords(keywords_collection)
+    keywords_list = db.get_keywords(keywords_collection, ctx.guild.id)
 
     if newKeyword in keywords_list:
-        await ctx.send('New Keyword Category created successfully')
+        await ctx.author.send('New Keyword Category created successfully')
     else:
-        await ctx.send('New Keyword Catgeory not created successfully')
+        await ctx.author.send('New Keyword Catgeory not created successfully')
+
 
 @client.command(name = 'addKeyword', aliases = ['addKW', 'aKW', 'addkeyword', 'akw'])
 async def about(ctx, existingCategory, *, newKeyword):
-    db.add_keyword(keywords_collection, users_collection, str(ctx.author), existingCategory, newKeyword)
+    db.add_keyword(keywords_collection, users_collection, str(ctx.author), existingCategory, newKeyword, ctx.guild.id)
 
-    keywords_list = db.get_keywords(keywords_collection)
+    keywords_list = db.get_keywords(keywords_collection, ctx.guild.id)
 
     if newKeyword in keywords_list:
-        await ctx.send('Keyword added successfully')
+        await ctx.author.send('Keyword added successfully')
     else:
-        await ctx.send('Keyword not added successfully')
+        await ctx.author.send('Keyword not added successfully')
+
 
 @client.command(name = 'addKeywordFromCategory', aliases = ['addKWFC', 'aKWFC', 'akwfc'])
 async def about(ctx, *, category):
-    db.add_all_keywords_from_category_to_user_keywords_list(keywords_collection, users_collection, str(ctx.author), category)
+    db.add_all_keywords_from_category_to_user_keywords_list(keywords_collection, users_collection, str(ctx.author), category, ctx.guild.id)
 
-    await ctx.send('Keywords added successfully')
+    await ctx.auhtor.send('Keywords added successfully')
+
 
 @client.command(name = 'getCategory', aliases = ['getC', 'gC', 'gc'])
 async def about(ctx):
-    categories_list = db.get_existing_keyword_categories(keywords_collection)
+    categories_list = db.get_existing_keyword_categories(keywords_collection, ctx.guild.id)
 
-    await ctx.send(categories_list)
-    await ctx.send('These are the keyword categories')
+    await ctx.author.send(categories_list)
+    await ctx.author.send('These are the keyword categories')
+
 
 @client.command(name = 'getKeywordsCategory', aliases = ['getKC', 'gKC', 'gkc'])
 async def about(ctx, *, category):
-    keywords_in_category = db.get_existing_keywords_in_specific_category(keywords_collection, category)
+    keywords_in_category = db.get_existing_keywords_in_specific_category(keywords_collection, category, ctx.guild.id)
 
-    await ctx.send(keywords_in_category)
-    await ctx.send('These are the keywords in the ' + category + ' category')
-
+    await ctx.author.send(keywords_in_category)
+    await ctx.author.send('These are the keywords in the ' + category + ' category')
 
 
 @client.command(name = 'myKeywords', aliases = ['myKW', 'mykw', 'mkw'])
 async def about(ctx):
     # Updates keyword list
-    keywords_list = db.get_keywords_of_user(users_collection, str(ctx.author))
+    keywords_list = db.get_keywords_of_user(users_collection, str(ctx.author), ctx.guild.id)
 
-    await ctx.send(keywords_list)
-    await ctx.send('These are your keywords')
+    await ctx.author.send(keywords_list)
+    await ctx.author.send('These are your keywords')
+
 
 @client.command(name = 'newsletter', aliases = ['summary', 'nl', 's'])
-async def about(ctx):
-    messages = db.get_all_messages(all_messages_collection, ctx.guild.id, str(ctx.channel.name))
-
-    Embed = discord.Embed(
-        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = messages
-    )
-
-    await ctx.author.send(embed = Embed)
-
-@client.command(name = 'sdc')
 async def about(ctx, *, channel):
-    guild_id = ctx.guild.id
-    messages = db.get_all_messages(all_messages_collection, guild_id, channel)
+    messages = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
+    summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = messages
+        description = summary
     )
 
     await ctx.author.send(embed = Embed)
+
+
+@client.command(name = 'newsletterDay', aliases = ['nld'])
+async def about(ctx, channel, date):
+    day = int(date)
+    messages = db.get_all_messages_from_specific_day(all_messages_collection, ctx.guild.id, channel, day)
+    summary = tfidf_summarizer.run_summarization(messages)
+
+    Embed = discord.Embed(
+        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
+        description = summary
+    )
+
+    await ctx.author.send(embed = Embed)
+
+@client.command(name = 'newsletterKeyword', aliases = ['nlkw', 'nkw'])
+async def about(ctx, channel, *, keyword):
+    messages = db.get_messages_with_keyword(message_collection, ctx.guild.id, channel, keyword)
+    summary = tfidf_summarizer.run_summarization(messages)
+
+    Embed = discord.Embed(
+        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
+        description = summary
+    )
+
+    await ctx.author.send(embed = Embed)
+
+
+@client.command(name = 'newsletterKeywordDay', aliases = ['nlkwd', 'nkwd'])
+async def about(ctx, channel, date, *, keyword):
+    day = int(date)
+    messages = db.get_messages_with_keyword_specific_day(message_collection, ctx.guild.id, channel, keyword, date)
+    summary = tfidf_summarizer.run_summarization(messages)
+
+    Embed = discord.Embed(
+        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
+        description = summary
+    )
+
+    await ctx.author.send(embed = Embed)
+
+
+@client.command(name = 'newsletterCategory', aliases = ['nlc', 'nc'])
+async def about(ctx, channel, *, category):
+    messages = db.get_messages_with_category(message_collection, keywords_collection, ctx.guild.id, channel, category)
+    summary = tfidf_summarizer.run_summarization(messages)
+
+    Embed = discord.Embed(
+        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
+        description = summary
+    )
+
+    await ctx.author.send(embed = Embed)
+
+
+@client.command(name = 'newsletterCategoryDay', aliases = ['nlcd', 'ncd'])
+async def about(ctx, channel, date, *, category):
+    messages = db.get_messages_with_category_specific_day(message_collection, keywords_collection, ctx.guild.id, channel, category, date)
+    summary = tfidf_summarizer.run_summarization(messages)
+
+    Embed = discord.Embed(
+        title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
+        description = summary
+    )
+
+    await ctx.author.send(embed = Embed)
+
 
 @client.event
 async def on_message(message):
-    # Updates keyword list
-    keywords_list = db.get_keywords(keywords_collection)
 
     if (message.author.bot):
         return
@@ -149,19 +208,14 @@ async def on_message(message):
                                 message.created_at, message.content,
                                 message.guild.id, str(message.channel.name))
 
-
+            # Updates keyword list
+            keywords_list = db.get_keywords(keywords_collection, message.guild.id)
             for key in keywords_list:
                 if key in message.content:
                     keyword_found = key
                     print('Found')
-                    myMessageEmbed = discord.Embed(
-                    title = "Message Found",
-                    description = message.content,
-                    )
 
-                    await message.channel.send(embed = myMessageEmbed)
-
-                    # Adds message to the database
+                    # Adds message to the database if it has a keyword
                     db.add_message(message_collection,
                                    users_collection,
                                    str(message.author),

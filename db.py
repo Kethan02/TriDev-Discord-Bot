@@ -100,9 +100,9 @@ def add_message(collection_obj, collection_user, user_name, keyword_flagged, mes
   }
   x = collection_obj.insert_one(document)
 
+  '''
   check_if_message_contains_keyword_of_user(collection_user, message)
-
-  return x.inserted_id.generation_time
+  '''
 
 def check_if_user_in_db(collection_users, user_name):
     """
@@ -118,7 +118,7 @@ def check_if_user_in_db(collection_users, user_name):
     else:
         return False
 
-def update_user_collection_keyword(collection_users, collection_keywords, user_name, keyword_category, first_keyword):
+def update_user_collection_keyword(collection_users, collection_keywords, user_name, guild_id, keyword_category, first_keyword):
     """
     Updates the keywords of a user if they add a keyword into a newly created category or an existing category
 
@@ -133,14 +133,14 @@ def update_user_collection_keyword(collection_users, collection_keywords, user_n
 
     if(check_if_user_in_db(collection_users, user_name)):
         collection_users.update_one(
-          {"user": user_name},
+          {"user": user_name, "guild": guild_id},
           {"$push": { "keywords": first_keyword}}
         )
     else:
         document = {
           "user": user_name,
-          "keywords": [first_keyword],
-          "messages":[]
+          "guild": guild_id,
+          "keywords": [first_keyword]
         }
         collection_users.insert_one(document)
 
@@ -158,7 +158,7 @@ def check_if_message_contains_keyword_of_user(collection_users, message):
                   {"$push": { "messages": message}}
                 )
 
-def create_keyword_category(collection_keywords, collection_users, commands_author, new_keyword_category, first_keyword):
+def create_keyword_category(collection_keywords, collection_users, commands_author, new_keyword_category, first_keyword, guild_id):
   """
   Creates a new keyword document populated with an intital keyword. More can be added later
   Also adds the keyword to the keywords list of the user that called on the command
@@ -174,15 +174,16 @@ def create_keyword_category(collection_keywords, collection_users, commands_auth
 
   document = {
     "category": new_keyword_category,
+    "guild": guild_id,
     "keywords": [first_keyword]
   }
   x = collection_keywords.insert_one(document)
 
-  update_user_collection_keyword(collection_users, collection_keywords, commands_author, new_keyword_category, first_keyword)
+  update_user_collection_keyword(collection_users, collection_keywords, commands_author, guild_id, new_keyword_category, first_keyword)
 
   return x.inserted_id.generation_time
 
-def add_keyword(collection_keywords, collection_users, user_name, existing_keyword_category, new_keyword):
+def add_keyword(collection_keywords, collection_users, user_name, existing_keyword_category, new_keyword, guild_id):
   """
   Adds a keyword to an existing keyword document.
   Also adds keyword to the keyword list of the user that called on the command
@@ -192,11 +193,11 @@ def add_keyword(collection_keywords, collection_users, user_name, existing_keywo
   Returns nothing.
   """
   collection_keywords.update_one(
-    {"category": existing_keyword_category},
+    {"category": existing_keyword_category, "guild": guild_id},
     {"$push": { "keywords": new_keyword}}
   )
 
-  update_user_collection_keyword(collection_users, collection_keywords, user_name, existing_keyword_category, new_keyword)
+  update_user_collection_keyword(collection_users, collection_keywords, user_name, guild_id, existing_keyword_category, new_keyword)
 
 '''
 Adds every keyword from a category to a user's keyword list
@@ -209,12 +210,12 @@ user_name - name of the user
 
 category - The category that they want to add the keywords from
 '''
-def add_all_keywords_from_category_to_user_keywords_list(collection_keywords, collection_users, user_name, category):
+def add_all_keywords_from_category_to_user_keywords_list(collection_keywords, collection_users, user_name, category, guild_id):
     keywords_in_category = []
     keywords_in_user = []
     keyword_list = []
-    category_keywords = collection_keywords.find({"category": category})
-    user_keywords = collection_users.find({"user": user_name})
+    category_keywords = collection_keywords.find({"category": category, "guild": guild_id})
+    user_keywords = collection_users.find({"user": user_name, "guild": guild_id})
 
     if(check_if_user_in_db(collection_users, user_name)):
         for document in category_keywords:
@@ -237,16 +238,15 @@ def add_all_keywords_from_category_to_user_keywords_list(collection_keywords, co
                 keyword_list.append(word)
         document = {
           "user": user_name,
-          "keywords": keyword_list,
-          "messages":[]
+          "keywords": keyword_list
         }
         collection_users.insert_one(document)
 
 '''
 Returns a list of the keyword categories
 '''
-def get_existing_keyword_categories(collection_keywords):
-    cursor = collection_keywords.find({})
+def get_existing_keyword_categories(collection_keywords, guild_id):
+    cursor = collection_keywords.find({"guild": guild_id})
     categories = []
     for document in cursor:
         categories.append(document["category"])
@@ -255,8 +255,8 @@ def get_existing_keyword_categories(collection_keywords):
 '''
 Returns the list of keywords in a specific category_keywords
 '''
-def get_existing_keywords_in_specific_category(collection_keywords, category):
-    cursor = collection_keywords.find({"category": category})
+def get_existing_keywords_in_specific_category(collection_keywords, category, guild_id):
+    cursor = collection_keywords.find({"category": category, "guild": guild_id})
 
     keywords = []
     for document in cursor:
@@ -267,22 +267,22 @@ def get_existing_keywords_in_specific_category(collection_keywords, category):
 '''
 Returns keywords of the user
 '''
-def get_keywords_of_user(collection_users, user_name):
+def get_keywords_of_user(collection_users, user_name, guild_id):
   """
   Returns the list of keywords for each user.
   """
-  cursor = collection_users.find({"user": user_name})
+  cursor = collection_users.find({"user": user_name, "guild": guild_id})
   keywords = []
   for document in cursor:
     for word in document["keywords"]:
       keywords.append(word)
   return keywords
 
-def get_keywords(collection_keywords):
+def get_keywords(collection_keywords, guild_id):
   """
   Returns the list of all keywords to search for.
   """
-  cursor = collection_keywords.find({})
+  cursor = collection_keywords.find({"guild": guild_id})
   keywords = []
   for document in cursor:
     for word in document["keywords"]:
@@ -300,12 +300,145 @@ channel - the channel they want the messages to be from
 '''
 def get_all_messages(collection_all_messages, guild_id, channel):
     message = ""
+    day = get_recent_day(collection_all_messages, guild_id, channel)
+    year = get_recent_year(collection_all_messages, guild_id, channel)
+    month = get_recent_month(collection_all_messages, guild_id, channel)
 
     documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
     for document in documents:
-            message += document["content"]
-            message += " "
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    message += document["content"]
+                    message += " "
     return message
+
+def get_all_messages_from_specific_day(collection_all_messages, guild_id, channel, day):
+    message = ''
+    year = get_recent_year(collection_all_messages, guild_id, channel)
+    month = get_recent_month(collection_all_messages, guild_id, channel)
+
+    documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
+    for document in documents:
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    message += document["content"]
+                    message += " "
+    return message
+
+
+def get_messages_with_keyword(collection_messages_keywords, guild_id, channel, keyword):
+    message = ''
+    day = get_recent_day(collection_messages_keywords, guild_id, channel)
+    year = get_recent_year(collection_messages_keywords, guild_id, channel)
+    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+
+    documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
+    for document in documents:
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    message += document["content"]
+                    message += " "
+    return message
+
+def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_id, channel, keyword, day):
+    message = ''
+    year = get_recent_year(collection_messages_keywords, guild_id, channel)
+    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+
+    documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
+    for document in documents:
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    message += document["content"]
+                    message += " "
+    return message
+
+
+def get_messages_with_category(collection_messages_keywords, collection_keywords, guild_id, channel, category):
+    message = ''
+    day = get_recent_day(collection_messages_keywords, guild_id, channel)
+    year = get_recent_year(collection_messages_keywords, guild_id, channel)
+    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+
+    keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
+
+    documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel})
+    for document in documents:
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    if(document["keyword"] in keyword_list):
+                        message += document["content"]
+                        message += " "
+    return message
+
+
+def get_messages_with_category_specific_day(collection_messages_keywords, collection_keywords, guild_id, channel, category, day):
+    message = ''
+    year = get_recent_year(collection_messages_keywords, guild_id, channel)
+    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+
+    keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
+
+    documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel})
+    for document in documents:
+        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
+            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
+                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
+                    if(document["keyword"] in keyword_list):
+                        message += document["content"]
+                        message += " "
+    return message
+
+
+def get_recent_day(collection_all_messages, guild_id, channel):
+    current_day = 0
+    day_list = []
+
+    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
+    for document in documents:
+        day = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day
+        day_list.append(day)
+
+    for days in day_list:
+        if days > current_day:
+            current_day = days
+
+    return current_day
+
+def get_recent_month(collection_all_messages, guild_id, channel):
+    current_month = 0
+    month_list = []
+
+    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
+    for document in documents:
+        month = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month
+        month_list.append(month)
+
+    for months in month_list:
+        if months > current_month:
+            current_month = months
+
+    return current_month
+
+def get_recent_year(collection_all_messages, guild_id, channel):
+    current_year = 0
+    year_list = []
+
+    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
+    for document in documents:
+        year = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year
+        year_list.append(year)
+
+    for years in year_list:
+        if years > current_year:
+            current_year = years
+
+    return current_year
 
 def main():
   # Connects to database and gets collection (slow)

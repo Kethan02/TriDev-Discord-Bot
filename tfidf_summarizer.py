@@ -35,7 +35,7 @@ def get_average(values) :
     for value in values :
         if value != 0 :
             greater_than_zero_count += 1
-            total += value 
+            total += value
     return total / greater_than_zero_count
 
 def get_threshold(tfidf_results) :
@@ -58,7 +58,7 @@ def run_summarization(text):
     # Set handicap
     # HANDICAP = set_handicap(text)
 
-    # Tokenizing the text 
+    # Tokenizing the text
     documents = nltk.sent_tokenize(text)
 
     # Get TF-IDF values
@@ -66,27 +66,27 @@ def run_summarization(text):
 
     # Return final summary
     return get_summary(documents, tfidf_results)
-    
 
 
 
-# Input text - to summarize 
+
+# Input text - to summarize
 # text = """
-# Louis Daniel Armstrong (August 4, 1901 – July 6, 1971), nicknamed "Satchmo",[a] "Satch", 
-# and "Pops",[2] was an American trumpeter, composer, vocalist, and actor who was among the most influential 
-# figures in jazz. His career spanned five decades, from the 1920s to the 1960s, and different eras in the 
-# history of jazz.[3] In 2017, he was inducted into the Rhythm & Blues Hall of Fame. Armstrong was born and raised in New Orleans. 
-# Coming to prominence in the 1920s as an inventive trumpet and cornet player, Armstrong was a foundational influence in jazz, 
-# shifting the focus of the music from collective improvisation to solo performance.[4] Around 1922, he followed his mentor, 
-# Joe "King" Oliver, to Chicago to play in the Creole Jazz Band. In Chicago, he spent time with other popular jazz musicians, 
-# reconnecting with his friend Bix Beiderbecke and spending time with Hoagy Carmichael and Lil Hardin. He earned a reputation 
-# at "cutting contests", and relocated to New York in order to join Fletcher Henderson's band. With his instantly recognizable rich, 
-# gravelly voice, Armstrong was also an influential singer and skillful improviser, bending the lyrics and melody of a song. 
-# He was also skilled at scat singing. Armstrong is renowned for his charismatic stage presence and voice as well as his trumpet 
-# playing. By the end of Armstrong's career in the 1960s, his influence had spread to popular music in general. Armstrong was one 
-# of the first popular African-American entertainers to "cross over" to wide popularity with white (and international) audiences. 
-# He rarely publicly politicized his race, to the dismay of fellow African Americans, but took a well-publicized stand for 
-# desegregation in the Little Rock crisis. He was able to access the upper echelons of American society at a time when this 
+# Louis Daniel Armstrong (August 4, 1901 – July 6, 1971), nicknamed "Satchmo",[a] "Satch",
+# and "Pops",[2] was an American trumpeter, composer, vocalist, and actor who was among the most influential
+# figures in jazz. His career spanned five decades, from the 1920s to the 1960s, and different eras in the
+# history of jazz.[3] In 2017, he was inducted into the Rhythm & Blues Hall of Fame. Armstrong was born and raised in New Orleans.
+# Coming to prominence in the 1920s as an inventive trumpet and cornet player, Armstrong was a foundational influence in jazz,
+# shifting the focus of the music from collective improvisation to solo performance.[4] Around 1922, he followed his mentor,
+# Joe "King" Oliver, to Chicago to play in the Creole Jazz Band. In Chicago, he spent time with other popular jazz musicians,
+# reconnecting with his friend Bix Beiderbecke and spending time with Hoagy Carmichael and Lil Hardin. He earned a reputation
+# at "cutting contests", and relocated to New York in order to join Fletcher Henderson's band. With his instantly recognizable rich,
+# gravelly voice, Armstrong was also an influential singer and skillful improviser, bending the lyrics and melody of a song.
+# He was also skilled at scat singing. Armstrong is renowned for his charismatic stage presence and voice as well as his trumpet
+# playing. By the end of Armstrong's career in the 1960s, his influence had spread to popular music in general. Armstrong was one
+# of the first popular African-American entertainers to "cross over" to wide popularity with white (and international) audiences.
+# He rarely publicly politicized his race, to the dismay of fellow African Americans, but took a well-publicized stand for
+# desegregation in the Little Rock crisis. He was able to access the upper echelons of American society at a time when this
 # was difficult for black men.
 # """
 
@@ -128,7 +128,7 @@ def run_summarization(text):
 # can site that host kubuntu isos use the kubuntu logo?
 # Good way to get it ;-)
 # I have a seed running with all 6 images; currently ~75kb/sec on -live-powerpc.iso, 0kb on -install-powerpc.iso
-# i think i will also offer a isos in parts  
+# i think i will also offer a isos in parts
 # I don't see why not, as long as you are offering the official images
 # I wonder why I can't see it...?
 # mdz i want to be shure
@@ -209,4 +209,4 @@ def run_summarization(text):
 # """
 
 
-print(run_summarization(text))
+#print(run_summarization(text))
