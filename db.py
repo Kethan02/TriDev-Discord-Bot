@@ -300,9 +300,15 @@ channel - the channel they want the messages to be from
 '''
 def get_all_messages(collection_all_messages, guild_id, channel):
     message = ""
+    day = get_current_day(collection_all_messages, guild_id, channel)
+    month = get_current_month(collection_all_messages, guild_id, channel)
+    year = get_current_year(collection_all_messages, guild_id, channel)
+
+    '''
     day = get_recent_day(collection_all_messages, guild_id, channel)
     year = get_recent_year(collection_all_messages, guild_id, channel)
     month = get_recent_month(collection_all_messages, guild_id, channel)
+    '''
 
     documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
     for document in documents:
@@ -394,7 +400,25 @@ def get_messages_with_category_specific_day(collection_messages_keywords, collec
                         message += " "
     return message
 
+def get_current_day(collection_all_messages, guild_id, channel):
+    now = datetime.datetime.now()
+    day = now.strftime("%d")
 
+    return day
+
+def get_current_month(collection_all_messages, guild_id, channel):
+    now = datetime.datetime.now()
+    month = now.strftime("%m")
+
+    return month
+
+def get_current_year(collection_all_messages, guild_id, channel):
+    now = datetime.datetime.now()
+    year = now.strftime("%Y")
+
+    return year
+
+'''
 def get_recent_day(collection_all_messages, guild_id, channel):
     current_day = 0
     day_list = []
@@ -439,6 +463,7 @@ def get_recent_year(collection_all_messages, guild_id, channel):
             current_year = years
 
     return current_year
+'''
 
 def main():
   # Connects to database and gets collection (slow)
