@@ -120,7 +120,10 @@ async def about(ctx):
 
 @client.command(name = 'newsletter', aliases = ['summary', 'nl', 's'])
 async def about(ctx, *, channel):
-    messages = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
+    messagesm, test_num = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
+    await ctx.author.send(messages + test_num)
+
+    '''
     summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
@@ -129,6 +132,7 @@ async def about(ctx, *, channel):
     )
 
     await ctx.author.send(embed = Embed)
+    '''
 
 
 @client.command(name = 'newsletterDay', aliases = ['nld'])

@@ -304,18 +304,17 @@ def get_all_messages(collection_all_messages, guild_id, channel):
     month = get_current_month(collection_all_messages, guild_id, channel)
     year = get_current_year(collection_all_messages, guild_id, channel)
 
-    '''
-    day = get_recent_day(collection_all_messages, guild_id, channel)
-    year = get_recent_year(collection_all_messages, guild_id, channel)
-    month = get_recent_month(collection_all_messages, guild_id, channel)
-    '''
+    test_num = 0
 
     documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
+            test_num = 1
             if(document["timestamp"].strftime("%m") == month):
+                test_num = 2
                 if(document["timestamp"].strftime("%d") == day):
+                    test_num = 3
                     message += document["content"]
                     message += " "
     '''
@@ -326,7 +325,7 @@ def get_all_messages(collection_all_messages, guild_id, channel):
                     message += document["content"]
                     message += " "
     '''
-    return message
+    return message, test_num
 
 def get_all_messages_from_specific_day(collection_all_messages, guild_id, channel, day):
     message = ''
