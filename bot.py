@@ -131,7 +131,6 @@ async def about(ctx, *, channel):
     )
 
     await ctx.author.send(embed = Embed)
-    '''
 
 
 @client.command(name = 'newsletterDay', aliases = ['nld'])
