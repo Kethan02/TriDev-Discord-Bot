@@ -325,12 +325,12 @@ def get_all_messages(collection_all_messages, guild_id, channel):
                     message += document["content"]
                     message += " "
     '''
-    return message, test_num
+    return message, test
 
 def get_all_messages_from_specific_day(collection_all_messages, guild_id, channel, day):
     message = ''
-    year = get_recent_year(collection_all_messages, guild_id, channel)
-    month = get_recent_month(collection_all_messages, guild_id, channel)
+    year = get_current_year(collection_all_messages, guild_id, channel)
+    month = get_current_month(collection_all_messages, guild_id, channel)
 
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
     for document in documents:
@@ -353,9 +353,9 @@ def get_all_messages_from_specific_day(collection_all_messages, guild_id, channe
 
 def get_messages_with_keyword(collection_messages_keywords, guild_id, channel, keyword):
     message = ''
-    day = get_recent_day(collection_messages_keywords, guild_id, channel)
-    year = get_recent_year(collection_messages_keywords, guild_id, channel)
-    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+    day = get_current_day(collection_messages_keywords, guild_id, channel)
+    year = get_current_year(collection_messages_keywords, guild_id, channel)
+    month = get_current_month(collection_messages_keywords, guild_id, channel)
 
     documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
@@ -378,8 +378,8 @@ def get_messages_with_keyword(collection_messages_keywords, guild_id, channel, k
 
 def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_id, channel, keyword, day):
     message = ''
-    year = get_recent_year(collection_messages_keywords, guild_id, channel)
-    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+    year = get_current_year(collection_messages_keywords, guild_id, channel)
+    month = get_current_month(collection_messages_keywords, guild_id, channel)
 
     documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
@@ -403,9 +403,9 @@ def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_i
 
 def get_messages_with_category(collection_messages_keywords, collection_keywords, guild_id, channel, category):
     message = ''
-    day = get_recent_day(collection_messages_keywords, guild_id, channel)
-    year = get_recent_year(collection_messages_keywords, guild_id, channel)
-    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+    day = get_current_day(collection_messages_keywords, guild_id, channel)
+    year = get_current_year(collection_messages_keywords, guild_id, channel)
+    month = get_current_month(collection_messages_keywords, guild_id, channel)
 
     keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
 
@@ -432,8 +432,8 @@ def get_messages_with_category(collection_messages_keywords, collection_keywords
 
 def get_messages_with_category_specific_day(collection_messages_keywords, collection_keywords, guild_id, channel, category, day):
     message = ''
-    year = get_recent_year(collection_messages_keywords, guild_id, channel)
-    month = get_recent_month(collection_messages_keywords, guild_id, channel)
+    year = get_current_year(collection_messages_keywords, guild_id, channel)
+    month = get_current_month(collection_messages_keywords, guild_id, channel)
 
     keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
 
@@ -476,7 +476,7 @@ def get_current_year(collection_all_messages, guild_id, channel):
     return year
 
 '''
-def get_recent_day(collection_all_messages, guild_id, channel):
+def get_current_day(collection_all_messages, guild_id, channel):
     current_day = 0
     day_list = []
 
@@ -491,7 +491,7 @@ def get_recent_day(collection_all_messages, guild_id, channel):
 
     return current_day
 
-def get_recent_month(collection_all_messages, guild_id, channel):
+def get_current_month(collection_all_messages, guild_id, channel):
     current_month = 0
     month_list = []
 
@@ -506,7 +506,7 @@ def get_recent_month(collection_all_messages, guild_id, channel):
 
     return current_month
 
-def get_recent_year(collection_all_messages, guild_id, channel):
+def get_current_year(collection_all_messages, guild_id, channel):
     current_year = 0
     year_list = []
 
