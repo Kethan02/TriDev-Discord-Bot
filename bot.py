@@ -120,7 +120,7 @@ async def about(ctx):
 
 @client.command(name = 'newsletter', aliases = ['summary', 'nl', 's'])
 async def about(ctx, *, channel):
-    messagesm, test_num = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
+    messages, test_num = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
     await ctx.author.send(messages + test_num)
 
     '''
