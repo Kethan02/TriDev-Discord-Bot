@@ -353,8 +353,7 @@ def get_messages_with_keyword(collection_messages_keywords, guild_id, channel, k
     year = get_current_year(collection_messages_keywords, guild_id, channel)
     month = get_current_month(collection_messages_keywords, guild_id, channel)
 
-    documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
-    documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
+    documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel, "keyword": keyword})
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
             if(document["timestamp"].strftime("%m") == month):
@@ -377,8 +376,7 @@ def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_i
     year = get_current_year(collection_messages_keywords, guild_id, channel)
     month = get_current_month(collection_messages_keywords, guild_id, channel)
 
-    documents = collection_messages_keywords.find({"keyword": keyword, "guild": guild_id, "channel": channel})
-    documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
+    documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel, "keyword": keyword})
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
             if(document["timestamp"].strftime("%m") == month):
@@ -405,14 +403,15 @@ def get_messages_with_category(collection_messages_keywords, collection_keywords
 
     keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
 
-    documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel})
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
             if(document["timestamp"].strftime("%m") == month):
                 if(document["timestamp"].strftime("%d") == day):
-                    message += document["content"]
-                    message += " "
+                    for key in keyword_list:
+                        if key in document["content"]:
+                            message += document["content"]
+                            message += " "
 
     '''
     for document in documents:
@@ -434,13 +433,14 @@ def get_messages_with_category_specific_day(collection_messages_keywords, collec
     keyword_list = get_existing_keywords_in_specific_category(collection_keywords, category, guild_id)
 
     documents = collection_messages_keywords.find({"guild": guild_id, "channel": channel})
-    documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
             if(document["timestamp"].strftime("%m") == month):
                 if(document["timestamp"].strftime("%d") == day):
-                    message += document["content"]
-                    message += " "
+                    for key in keyword_list:
+                        if key in document["content"]:
+                            message += document["content"]
+                            message += " "
 
     '''
     for document in documents:
