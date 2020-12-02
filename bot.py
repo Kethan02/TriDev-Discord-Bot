@@ -122,6 +122,8 @@ async def about(ctx):
 async def about(ctx, *, channel):
     messages = db.get_all_messages(all_messages_collection, ctx.guild.id, channel)
     summary = tfidf_summarizer.run_summarization(messages)
+    while (len(summary) > 6000):
+        summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
@@ -135,6 +137,8 @@ async def about(ctx, *, channel):
 async def about(ctx, channel, date):
     messages = db.get_all_messages_from_specific_day(all_messages_collection, ctx.guild.id, channel, date)
     summary = tfidf_summarizer.run_summarization(messages)
+    while (len(summary) > 6000):
+        summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
