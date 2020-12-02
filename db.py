@@ -306,6 +306,7 @@ def get_all_messages(collection_all_messages, guild_id, channel):
 
     documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
     documents = collection_all_messages.find({"guild": guild_id, "channel": channel})
+
     for document in documents:
         if(document["timestamp"].strftime("%Y") == year):
             if(document["timestamp"].strftime("%m") == month):
@@ -469,53 +470,6 @@ def get_current_year(collection_all_messages, guild_id, channel):
     year = now.strftime("%Y")
 
     return year
-
-'''
-def get_current_day(collection_all_messages, guild_id, channel):
-    current_day = 0
-    day_list = []
-
-    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
-    for document in documents:
-        day = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day
-        day_list.append(day)
-
-    for days in day_list:
-        if days > current_day:
-            current_day = days
-
-    return current_day
-
-def get_current_month(collection_all_messages, guild_id, channel):
-    current_month = 0
-    month_list = []
-
-    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
-    for document in documents:
-        month = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month
-        month_list.append(month)
-
-    for months in month_list:
-        if months > current_month:
-            current_month = months
-
-    return current_month
-
-def get_current_year(collection_all_messages, guild_id, channel):
-    current_year = 0
-    year_list = []
-
-    documents = collection_all_messages.find({"channel": channel, "guild": guild_id})
-    for document in documents:
-        year = (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year
-        year_list.append(year)
-
-    for years in year_list:
-        if years > current_year:
-            current_year = years
-
-    return current_year
-'''
 
 def main():
   # Connects to database and gets collection (slow)
