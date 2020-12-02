@@ -160,7 +160,7 @@ async def about(ctx, channel, *, keyword):
 
 @client.command(name = 'newsletterKeywordDay', aliases = ['nlkwd', 'nkwd'])
 async def about(ctx, channel, date, *, keyword):
-    day = int(date)
+
     messages = db.get_messages_with_keyword_specific_day(message_collection, ctx.guild.id, channel, keyword, date)
     summary = tfidf_summarizer.run_summarization(messages)
 
