@@ -136,7 +136,7 @@ async def about(ctx, *, channel):
 
 @client.command(name = 'newsletterDay', aliases = ['nld'])
 async def about(ctx, channel, date):
-    messages = db.get_all_messages_from_specific_day(all_messages_collection, ctx.guild.id, channel, ctx.created_at.strftime("%d"))
+    messages = db.get_all_messages_from_specific_day(all_messages_collection, ctx.guild.id, channel, date)
     summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
@@ -162,7 +162,7 @@ async def about(ctx, channel, *, keyword):
 @client.command(name = 'newsletterKeywordDay', aliases = ['nlkwd', 'nkwd'])
 async def about(ctx, channel, date, *, keyword):
     day = int(date)
-    messages = db.get_messages_with_keyword_specific_day(message_collection, ctx.guild.id, channel, keyword, ctx.created_at.strftime("%d"))
+    messages = db.get_messages_with_keyword_specific_day(message_collection, ctx.guild.id, channel, keyword, date)
     summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
@@ -188,7 +188,7 @@ async def about(ctx, channel, *, category):
 
 @client.command(name = 'newsletterCategoryDay', aliases = ['nlcd', 'ncd'])
 async def about(ctx, channel, date, *, category):
-    messages = db.get_messages_with_category_specific_day(message_collection, keywords_collection, ctx.guild.id, channel, category, ctx.created_at.strftime("%d"))
+    messages = db.get_messages_with_category_specific_day(message_collection, keywords_collection, ctx.guild.id, channel, category, date)
     summary = tfidf_summarizer.run_summarization(messages)
 
     Embed = discord.Embed(
@@ -228,5 +228,4 @@ async def on_message(message):
                                    message.created_at)
     await client.process_commands(message)
 
-# client.run(os.environ['DISCORD_TOKEN'])
-client.run('NzY2NTE5NzU0MTc2MzMxODE2.X4kjJg.2bAKHIoIma1bg4rGq5YspMUaH9k')
+client.run(os.environ['DISCORD_TOKEN'])
