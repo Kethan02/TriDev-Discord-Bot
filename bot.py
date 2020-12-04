@@ -128,12 +128,11 @@ async def about(ctx, *, channel):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    await ctx.author.send(splitting_second_half_of_summary(summary, list_summary))
+    list_summary = summary_split(summary, [])
 
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+str(para_number), value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -148,13 +147,11 @@ async def about(ctx, channel, date):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    await ctx.author.send(splitting_second_half_of_summary(summary, list_summary))
+    list_summary = summary_split(summary, [])
 
-    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+str(para_number), value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -168,11 +165,11 @@ async def about(ctx, channel, *, keyword):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary, list_summary)
+    list_summary = summary_split(summary, [])
+
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -188,11 +185,11 @@ async def about(ctx, channel, date, *, keyword):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary, list_summary)
+    list_summary = summary_split(summary, [])
+
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -207,11 +204,11 @@ async def about(ctx, channel, *, category):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary, list_summary)
+    list_summary = summary_split(summary, [])
+
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -226,11 +223,11 @@ async def about(ctx, channel, date, *, category):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary, list_summary)
+    list_summary = summary_split(summary, [])
+
     for i in range(len(list_summary)):
         para_number = i+1
-        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
+        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -265,18 +262,25 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-def splitting_second_half_of_summary(s, list_return):
-    list = list_return
 
-    if(len(s)>2048):
-        first_half = s[:2048]
-        second_half = s[2048:]
-        if(len(second_half)>2048):
-            list.append(first_half)
-            splitting_second_half_of_summary(second_half, list)
+def summary_split(sum, original_list):
+    list = original_list
+    first_half = sum[:1024]
+    second_half = sum[1024:]
+
+    if len(sum)>1024:
+        list.append(first_half)
+        if len(second_half)>1024:
+            return summary_split(second_half, list)
+        else:
+            list.append(second_half)
+            return list
     else:
-        list.append(s)
+        list.append(first_half)
+        list.append(second_half)
         return list
+
+
 
 
 
