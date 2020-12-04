@@ -265,14 +265,15 @@ async def on_message(message):
 def splitting_second_half_of_summary(s, list_return):
     first_half = s[:2048]
     second_half = s[2048:]
+    list = list_return
 
     if(len(second_half)>2048):
-        list_return.append(first_half)
-        splitting_second_half_of_summary(second_half, list_return)
+        list.append(first_half)
+        splitting_second_half_of_summary(second_half, list)
     else:
-        list_return.append(first_half)
-        list_return.append(second_half)
-        return list_return
+        list.append(first_half)
+        list.append(second_half)
+        return list
 
 
 
