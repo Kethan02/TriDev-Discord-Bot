@@ -125,8 +125,13 @@ async def about(ctx, *, channel):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -138,8 +143,13 @@ async def about(ctx, channel, date):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -150,8 +160,13 @@ async def about(ctx, channel, *, keyword):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -164,8 +179,13 @@ async def about(ctx, channel, date, *, keyword):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -177,8 +197,13 @@ async def about(ctx, channel, *, category):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -190,8 +215,13 @@ async def about(ctx, channel, date, *, category):
 
     Embed = discord.Embed(
         title = ("Newsletter from the " + channel + " channel in the " + ctx.guild.name + " server"),
-        description = summary
+        description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
+
+    list_summary = splitting_second_half_of_summary(summary)
+    for i in range(len(list_summary)):
+        para_number = i+1
+        Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -224,5 +254,18 @@ async def on_message(message):
                                    str(message.channel.name),
                                    message.created_at)
     await client.process_commands(message)
+
+
+def splitting_second_half_of_summary(s):
+    first_half = s[:2048]
+    second_half = s[2048:]
+    list_return = []
+
+    if(len(second_half)>2048):
+        return list_return.extend(first_half, splitting_second_half_of_summary(second_half))
+    else:
+        return list_return.extend(first_half, second_half)
+
+
 
 client.run(os.environ['DISCORD_TOKEN'])
