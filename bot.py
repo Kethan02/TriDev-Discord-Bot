@@ -262,9 +262,11 @@ def splitting_second_half_of_summary(s):
     list_return = []
 
     if(len(second_half)>2048):
-        return list_return.extend(first_half, splitting_second_half_of_summary(second_half))
+        extend_list = [first_half, splitting_second_half_of_summary(second_half)]
+        return list_return.extend(extend_list)
     else:
-        return list_return.extend(first_half, second_half)
+        extend_list = [first_half, second_half]
+        return list_return.extend(extend_list)
 
 
 
