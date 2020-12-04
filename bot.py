@@ -129,7 +129,7 @@ async def about(ctx, *, channel):
     )
 
     list_summary = ['k']
-    list_summary.append(splitting_second_half_of_summary(summary))
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+str(para_number), value = list_summary[i], inline = False)
@@ -148,7 +148,7 @@ async def about(ctx, channel, date):
     )
 
     list_summary = ['k']
-    list_summary.append(splitting_second_half_of_summary(summary))
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+str(para_number), value = list_summary[i], inline = False)
@@ -166,7 +166,7 @@ async def about(ctx, channel, *, keyword):
     )
 
     list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary)
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
@@ -186,7 +186,7 @@ async def about(ctx, channel, date, *, keyword):
     )
 
     list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary)
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
@@ -205,7 +205,7 @@ async def about(ctx, channel, *, category):
     )
 
     list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary)
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
@@ -224,7 +224,7 @@ async def about(ctx, channel, date, *, category):
     )
 
     list_summary = ['k']
-    list_summary = splitting_second_half_of_summary(summary)
+    list_summary = splitting_second_half_of_summary(summary, list_summary)
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+para_number, value = list_summary[i], inline = False)
@@ -262,15 +262,17 @@ async def on_message(message):
     await client.process_commands(message)
 
 
-def splitting_second_half_of_summary(s):
+def splitting_second_half_of_summary(s, list_return):
     first_half = s[:2048]
     second_half = s[2048:]
-    list_return = []
 
     if(len(second_half)>2048):
-        return list_return.extend([first_half, splitting_second_half_of_summary(second_half)])
+        list_return.append(first_half)
+        splitting_second_half_of_summary(second_half, list_return)
     else:
-        return list_return.extend([first_half, second_half])
+        list_return.append(first_half)
+        list_return.append(second_half)
+        return list_return
 
 
 
