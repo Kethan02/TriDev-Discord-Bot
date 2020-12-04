@@ -130,7 +130,7 @@ async def about(ctx, *, channel):
 
     list_summary = ['k']
     await ctx.author.send(splitting_second_half_of_summary(summary, list_summary))
-    
+
     for i in range(len(list_summary)):
         para_number = i+1
         Embed.add_field(name = 'Paragraph'+str(para_number), value = list_summary[i], inline = False)
@@ -149,6 +149,7 @@ async def about(ctx, channel, date):
     )
 
     list_summary = ['k']
+    await ctx.author.send(summary)
     await ctx.author.send(splitting_second_half_of_summary(summary, list_summary))
 
     list_summary = splitting_second_half_of_summary(summary, list_summary)
