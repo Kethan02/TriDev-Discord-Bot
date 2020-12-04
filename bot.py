@@ -149,7 +149,6 @@ async def about(ctx, channel, date):
     )
 
     list_summary = ['k']
-    await ctx.author.send(summary)
     await ctx.author.send(splitting_second_half_of_summary(summary, list_summary))
 
     list_summary = splitting_second_half_of_summary(summary, list_summary)
@@ -267,16 +266,16 @@ async def on_message(message):
 
 
 def splitting_second_half_of_summary(s, list_return):
-    first_half = s[:2048]
-    second_half = s[2048:]
     list = list_return
 
-    if(len(second_half)>2048):
-        list.append(first_half)
-        splitting_second_half_of_summary(second_half, list)
+    if(len(s)>2048):
+        first_half = s[:2048]
+        second_half = s[2048:]
+        if(len(second_half)>2048):
+            list.append(first_half)
+            splitting_second_half_of_summary(second_half, list)
     else:
-        list.append(first_half)
-        list.append(second_half)
+        list.append(s)
         return list
 
 
