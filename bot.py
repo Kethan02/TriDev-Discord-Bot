@@ -128,11 +128,13 @@ async def about(ctx, *, channel):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -147,11 +149,13 @@ async def about(ctx, channel, date):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -165,11 +169,13 @@ async def about(ctx, channel, *, keyword):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -185,11 +191,13 @@ async def about(ctx, channel, date, *, keyword):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -204,11 +212,13 @@ async def about(ctx, channel, *, category):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -223,11 +233,13 @@ async def about(ctx, channel, date, *, category):
         description = "*The summary is sent in multiple paragraphs due to size constrictions when sending it all in one paragraph*"
     )
 
-    list_summary = summary_split(summary, [])
-
-    for i in range(len(list_summary)):
-        para_number = i+1
-        Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
+    if len(summary)<1024:
+        Embed.add_field(name = 'Summary', value = summary, inline = False)
+    else:
+        list_summary = summary_split(summary, [])
+        for i in range(len(list_summary)):
+            para_number = i+1
+            Embed.add_field(name = "Paragraph {}".format(para_number), value = list_summary[i], inline = False)
 
     await ctx.author.send(embed = Embed)
 
@@ -284,4 +296,6 @@ def summary_split(sum, original_list):
 
 
 
-client.run(os.environ['DISCORD_TOKEN'])
+#client.run(os.environ['DISCORD_TOKEN'])
+
+client.run('NzY2NTE5NzU0MTc2MzMxODE2.X4kjJg.2bAKHIoIma1bg4rGq5YspMUaH9k')

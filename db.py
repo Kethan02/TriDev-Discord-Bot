@@ -313,14 +313,7 @@ def get_all_messages(collection_all_messages, guild_id, channel):
                 if(document["timestamp"].strftime("%d") == day):
                     message += document["content"]
                     message += " "
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    message += document["content"]
-                    message += " "
-    '''
+
     return message
 
 def get_all_messages_from_specific_day(collection_all_messages, guild_id, channel, day):
@@ -336,14 +329,6 @@ def get_all_messages_from_specific_day(collection_all_messages, guild_id, channe
                     message += document["content"]
                     message += " "
 
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    message += document["content"]
-                    message += " "
-    '''
     return message
 
 
@@ -361,14 +346,6 @@ def get_messages_with_keyword(collection_messages_keywords, guild_id, channel, k
                     message += document["content"]
                     message += " "
 
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    message += document["content"]
-                    message += " "
-    '''
     return message
 
 def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_id, channel, keyword, day):
@@ -384,14 +361,6 @@ def get_messages_with_keyword_specific_day(collection_messages_keywords, guild_i
                     message += document["content"]
                     message += " "
 
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    message += document["content"]
-                    message += " "
-    '''
     return message
 
 
@@ -413,15 +382,6 @@ def get_messages_with_category(collection_messages_keywords, collection_keywords
                             message += document["content"]
                             message += " "
 
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    if(document["keyword"] in keyword_list):
-                        message += document["content"]
-                        message += " "
-    '''
     return message
 
 
@@ -442,15 +402,6 @@ def get_messages_with_category_specific_day(collection_messages_keywords, collec
                             message += document["content"]
                             message += " "
 
-    '''
-    for document in documents:
-        if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).year == year:
-            if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).month == month:
-                if (datetime.datetime.strptime('{:%Y-%m-%dT%H:%M:%S}'.format(document["timestamp"]), '%Y-%m-%dT%H:%M:%S')).day == day:
-                    if(document["keyword"] in keyword_list):
-                        message += document["content"]
-                        message += " "
-    '''
     return message
 
 def get_current_day(collection_all_messages, guild_id, channel):
