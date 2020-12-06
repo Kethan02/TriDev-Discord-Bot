@@ -296,6 +296,4 @@ def summary_split(sum, original_list):
 
 
 
-#client.run(os.environ['DISCORD_TOKEN'])
-
-client.run('NzY2NTE5NzU0MTc2MzMxODE2.X4kjJg.2bAKHIoIma1bg4rGq5YspMUaH9k')
+client.run(os.environ['DISCORD_TOKEN'])
