@@ -1,8 +1,16 @@
 # The Discord Digest Codebase
 
-This project consists of a discord bot that scans messages in a guild and sends you a newsletter every morning with important information on what you missed. The project is written in python and uses discord.py to communicate with discord and MongoDB Altas for the backend.
+This discord bot is Team 3's submission for the Fall 2020 Tri-Dev Quarterly Project.
 
-## Setup
+![screenshot](https://raw.githubusercontent.com/Kethan02/TriDev-Discord-Bot/main/Screenshot.png)
+
+Our bot scans messages in a guild and sends you a newsletter with important information on what you missed. The project is written in python and uses discord.py, nltk, and MongoDB Altas for storing messages.
+
+It is hosted on heroku so you can add it to your own guild without having to host it, however, you are also welcome to set it up and host it yourself.
+
+## Developer Instructions
+
+If you don't plan on hosting yourself, the rest of this readme is not for you.
 
 ### Cloning the repository
 
@@ -16,12 +24,6 @@ cd into the repository
 
 ```bash
 cd TriDev-Discord-Bot
-```
-
-Switch to database branch
-
-```bash
-git checkout database
 ```
 
 ### Managing Dependencies
@@ -38,6 +40,12 @@ Install required dependencies with pipenv
 pipenv install
 ```
 
+To add a package to pipenv run this
+
+```bash
+pipenv install [package_name]
+```
+
 ## Usage
 
 Run this command
@@ -46,26 +54,8 @@ Run this command
 pipenv run python bot.py
 ```
 
-## Developer Instructions
-
-To add a package to pipenv run this
-
-```bash
-pipenv install [package_name]
-```
-
 For debugging and testing the database code, open db.py and scroll down to the bottom of the file. There should be a main method commented out. Uncomment it and run this
 
 ```bash
 pipenv run python db.py
 ```
-
-## Library Installation
-
-Install using pip(make sure to have pip installed):
-
-```bash
-
-pip install psysummaization
-
-
