@@ -8,6 +8,10 @@ Our bot scans messages in a guild and sends you a newsletter with important info
 
 It is hosted on heroku so you can add it to your own guild without having to host it, however, you are also welcome to set it up and host it yourself.
 
+## Adding to a Guild
+
+Documentation can be found [here](https://docs.google.com/document/d/1ZiID0doVBtlxTFAziNYPdXTqEeg-O4z_47q1nKTJ3sA/edit?usp=sharing).
+
 ## Developer Instructions
 
 If you don't plan on hosting yourself, the rest of this readme is not for you.
@@ -46,7 +50,7 @@ To add a package to pipenv run this
 pipenv install [package_name]
 ```
 
-## Usage
+### Usage
 
 Run this command
 
