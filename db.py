@@ -4,10 +4,11 @@ This module contains everything needed to interface with the mongodb database.
 
 from pymongo import MongoClient
 import datetime
+import os
 
 """Credentials are needed to log into the database"""
 user = "discord_user"
-pswd = "eUADmtKtHyQU5"
+pswd = os.environ['MONGO_PASS']
 
 """
 The databse name is the same as the guild name
